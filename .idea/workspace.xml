@@ -96,7 +96,7 @@
       <file leaf-file-name="ClientLi.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/ClientLi.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="115" column="63" selection-start="4631" selection-end="4631" vertical-scroll-proportion="0.23374613" vertical-offset="1423" max-vertical-offset="4830">
+            <state line="120" column="41" selection-start="4957" selection-end="4957" vertical-scroll-proportion="0.7662539" vertical-offset="810" max-vertical-offset="4830">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -594,12 +594,12 @@
       <workItem from="1392733969243" duration="9000" />
       <workItem from="1392742270676" duration="13087000" />
       <workItem from="1392816553305" duration="2005000" />
-      <workItem from="1392819952942" duration="1026000" />
+      <workItem from="1392819952942" duration="1865000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23962000" />
+    <option name="totallyTimeSpent" value="24801000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="2495" height="1416" extended-state="0" />
@@ -869,7 +869,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ClientLi.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="63" selection-start="4631" selection-end="4631" vertical-scroll-proportion="0.23374613" vertical-offset="1423" max-vertical-offset="4830">
+        <state line="120" column="41" selection-start="4957" selection-end="4957" vertical-scroll-proportion="0.7662539" vertical-offset="810" max-vertical-offset="4830">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

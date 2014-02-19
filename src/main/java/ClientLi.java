@@ -113,7 +113,7 @@ public class ClientLi {
 
 
     public void CreateSessionTable() {
-        cluster =  Cluster.builder().addContactPoint("127.0.0.1").build();
+        cluster =  Cluster.builder().addContactPoint("ec2-54-194-161-1.eu-west-1.compute.amazonaws.com").build();
         //cluster = Cluster.builder().addContactPoint("localhost").build();
         session = cluster.connect("li_keyspace");
         String tableCQL = "CREATE TABLE LI_keyspace.SessionRecords (" +
