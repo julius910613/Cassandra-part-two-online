@@ -9,7 +9,7 @@ public class Main {
         ClientLi cl = new ClientLi();
         cl.connect();
         try {
-            cl.CountNumber(34600);
+            cl.insertSession();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {

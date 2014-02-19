@@ -59,6 +59,8 @@ public class SiteSession {
         hitCount = 0;
     }
 
+
+
     public void reset(){
         hyperLogLog = new HyperLogLog(0.05);
         hitCount = 0;
@@ -136,7 +138,7 @@ public class SiteSession {
             //throw new IllegalArgumentException("interval since last hit exceeds session timeout");
             timeout = true;
         }
-        this.lastHitMillis = hitMillis;
+
 
         if(hitMillis < globalLastHitMillis) {
             outOfOrder = true;
@@ -157,6 +159,10 @@ public class SiteSession {
 
     }
 
+    public static void setGlobalLastHitMillis(long hitMillis){
+        globalLastHitMillis = hitMillis;
+    }
+
     public void addHitCount(long hitMillis, String url){
 
         timeout = false;
@@ -164,6 +170,8 @@ public class SiteSession {
         outOfOrder = false;
 
         flagNormal = false;
+
+        this.lastHitMillis = hitMillis;
 
         globalLastHitMillis = hitMillis;
 

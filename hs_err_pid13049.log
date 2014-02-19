@@ -1,0 +1,41 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 64487424 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2726), pid=13049, tid=140119843047168
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_51-b13) (build 1.7.0_51-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.51-b03 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f703c06a800):  VMThread [stack: 0x00007f7031688000,0x00007f7031789000] [id=13058]
+
+Stack: [0x00007f7031688000,0x00007f7031789000],  sp=0x00007f70317870a0,  free space=1020k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x992f4a]  VMError::report_and_die()+0x2ea
+V  [libjvm.so+0x4931ab]  report_vm_out_of_memory(char const*, int, unsigned long, char const*)+0x9b
+V  [libjvm.so+0x81338e]  os::Linux::commit_memory_impl(char*, unsigned long, bool)+0xfe
+V  [libjvm.so+0x81383f]  os::Linux::commit_memory_impl(char*, unsigned long, unsigned long, bool)+0x4f
+V  [libjvm.so+0x813a2c]  os::pd_commit_memory(char*, unsigned long, unsigned long, bool)+0xc
+V  [libjvm.so+0x80daea]  os::commit_memory(char*, unsigned long, unsigned long, bool)+0x2a
+V  [libjvm.so+0x87fcd3]  PSVirtualSpace::expand_by(unsigned long)+0x53
+V  [libjvm.so+0x8810a8]  PSYoungGen::resize_generation(unsigned long, unsigned long)+0xf8
+V  [libjvm.so+0x880212]  PSYoungGen::resize(unsigned long, unsigned long)+0x22
+V  [libjvm.so+0x87d6ab]  PSScavenge::invoke_no_policy()+0xf3b
+V  [libjvm.so+0x87de11]
