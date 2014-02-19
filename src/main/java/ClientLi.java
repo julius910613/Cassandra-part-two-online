@@ -249,7 +249,7 @@ public class ClientLi {
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         String line = null;
-        while ((line = bufferedReader.readLine()) != null && globalCount < 1000000) {
+        while ((line = bufferedReader.readLine()) != null ) {
             final String[] tokens = line.split(" ");
             if (tokens.length == 8) {
 
@@ -293,9 +293,9 @@ public class ClientLi {
                         sessions.remove(id);
                         count++;
 
-                        //if(count % 100000 == 0){
+                        if(count % 10000000 == 0){
                             System.out.println(count + " of session has been input");
-                        //}
+                        }
 
                     }
 
