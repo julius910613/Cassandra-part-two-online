@@ -310,7 +310,7 @@ public class ClientLi {
     }
 
 
-    private void close() {
+    public void close() {
         cluster.shutdown();
     }
 
