@@ -102,7 +102,7 @@ public class ClientLi {
 
     public void connect() {
         //cluster = Cluster.builder().addContactPoint("ec2-54-194-196-168.eu-west-1.compute.amazonaws.com").build();
-        cluster = Cluster.builder().addContactPoint("localhost").build();
+        cluster =  Cluster.builder().addContactPoint("ec2-54-194-161-1.eu-west-1.compute.amazonaws.com").build();
         session = cluster.connect("li_keyspace");
 
         rowCQL = session.prepare("INSERT INTO LI_keyspace.URLRecords(Client_id, TimeStamp, Action, Status, Size)" +
