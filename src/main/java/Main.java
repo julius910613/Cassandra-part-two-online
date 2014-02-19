@@ -7,7 +7,7 @@ import java.text.ParseException;
 public class Main {
     public static void main(String[] args){
         ClientLi cl = new ClientLi();
-        cl.connect();
+        cl.CreateSessionTable();
         try {
             cl.insertSession();
         } catch (IOException e) {
