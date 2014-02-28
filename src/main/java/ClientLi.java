@@ -13,21 +13,17 @@ import java.util.zip.GZIPInputStream;
  */
 public class ClientLi {
 
-    private Cluster cluster;
-
-    private Session session;
-
-    private PreparedStatement rowCQL = null;
-
-    private PreparedStatement searchCQL = null;
-
     private final File dataDir = new File("/home/ubuntu/data/cassandra-test-dataset");
-    //private final File dataDir = new File("/home/fanchenli/Downloads");
-
     private final File logFile = new File(dataDir, "CSC8101-logfile.gz");
-    //private final File logFile = new File(dataDir, "loglite");
-
     private final DateFormat dateFormat = new SimpleDateFormat("[dd/MMM/yyyy:HH:mm:ss z]");
+    private Cluster cluster;
+    private Session session;
+    //private final File dataDir = new File("/home/fanchenli/Downloads");
+    private PreparedStatement rowCQL = null;
+    //private final File logFile = new File(dataDir, "loglite");
+    private PreparedStatement searchCQL = null;
+    private PreparedStatement searchSessionByIDCQL = null;
+
 
     public void createSchema() {
         //create keyspace
@@ -71,63 +67,15 @@ public class ClientLi {
     }
 
 
-    public void countActivity(String c_id, String S_time, String E_time) {
-        //String countCQL = "select url, client_id from client_table where client_id = " + " ' "+c_id + " ' " + "and timespot >=" + " ' " + S_time + " ' " + " and timespot <=' " + E_time + " ';";
-        PreparedStatement countCQL = session.prepare("SELECT url, client_id FROM client_table WHERE client_id = ? and timespot >= ? and timespot <= ? ");
-        ResultSetFuture queryFuture = session.executeAsync(new BoundStatement(countCQL).bind(c_id, S_time, E_time));
-
-        ResultSet rset = queryFuture.getUninterruptibly();
-        for (Row row : rset) {
-            System.out.println(row.getString(0) + " " + row.getString(1));
-        }
-
-
-    }
-
-
-    public void countNumOfURL(ArrayList<String> URLlist, String s_time, String e_time) {
-        PreparedStatement countCQL = session.prepare("SELECT count(*) FROM url_table WHERE url = ? and timespot >= ? and timespot <= ? ");
-        for (int i = 0; i < URLlist.size(); i++) {
-            String url = URLlist.get(i);
-            //String countCQL = "select count(*) from url_table where url = ' " + url + " ' and timespot >=" + " ' " + s_time + " ' " + " and timespot <=' " + e_time + " ';";
-
-            ResultSetFuture queryFuture = session.executeAsync(new BoundStatement(countCQL).bind(URLlist.get(i), s_time, e_time));
-
-            ResultSet rset = queryFuture.getUninterruptibly();
-            for (Row row : rset) {
-                System.out.println(url + " " + row.getLong(0));
-            }
-        }
-    }
-
     public void connect() {
-        //cluster = Cluster.builder().addContactPoint("ec2-54-194-196-168.eu-west-1.compute.amazonaws.com").build();
-        cluster =  Cluster.builder().addContactPoint("ec2-54-194-161-1.eu-west-1.compute.amazonaws.com").build();
+
+        cluster = Cluster.builder().addContactPoint("ec2-54-194-196-168.eu-west-1.compute.amazonaws.com").build();
         session = cluster.connect("li_keyspace");
 
-        //rowCQL = session.prepare("INSERT INTO LI_keyspace.URLRecords(Client_id, TimeStamp, Action, Status, Size)" +
-               // "VALUES (? ,? ,? ,? ,?);");
+        rowCQL = session.prepare("INSERT INTO LI_keyspace.URLRecords(Client_id, TimeStamp, Action, Status, Size)" +
+                "VALUES (? ,? ,? ,? ,?);");
 
         searchCQL = session.prepare("INSERT INTO LI_keyspace.SessionRecords (Client_id, StartTime, EndTime, numberOfAccess, numberOfURL)  VALUES (? ,? ,? ,? ,?);");
-    }
-
-
-    public void CreateSessionTable() {
-        cluster =  Cluster.builder().addContactPoint("ec2-54-194-161-1.eu-west-1.compute.amazonaws.com").build();
-        //cluster = Cluster.builder().addContactPoint("localhost").build();
-        session = cluster.connect("li_keyspace");
-        String tableCQL = "CREATE TABLE LI_keyspace.SessionRecords (" +
-                "Client_id int, " +
-                "StartTime timestamp, " +
-                "EndTime timestamp, " +
-                "numberOfAccess int," +
-                "numberOfURL int," +
-                "PRIMARY KEY (Client_id, StartTime, EndTime)" +
-                ");";
-        session.execute(tableCQL);
-
-        searchCQL = session.prepare("INSERT INTO LI_keyspace.SessionRecords (Client_id, StartTime, EndTime, numberOfAccess, numberOfURL)  VALUES (? ,? ,? ,? ,?);");
-
     }
 
 
@@ -143,7 +91,7 @@ public class ClientLi {
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         String line = null;
-        while ((line = bufferedReader.readLine()) != null && globalCount < 1000000) {
+        while ((line = bufferedReader.readLine()) != null ) {
             final String[] tokens = line.split(" ");
             if (tokens.length == 8) {
 
@@ -208,7 +156,6 @@ public class ClientLi {
 
     }
 
-
     public void insertSession() throws ParseException, IOException {
 
 
@@ -226,11 +173,11 @@ public class ClientLi {
                     int numofaccess = (int) sessionOutput.getHitCount();
                     int numofurl = (int) sessionOutput.getHyperLogLog().cardinality();
                     ResultSetFuture queryFuture = session.executeAsync(new BoundStatement(searchCQL).bind(Integer.parseInt(sessionOutput.getId()), startdate, enddate, numofaccess, numofurl));
-                   // sessions.remove(id);
-                   // count++;
+                    // sessions.remove(id);
+                    // count++;
 
                     //if(count % 100000 == 0){
-                   // System.out.println(count + " of session has been input");
+                    // System.out.println(count + " of session has been input");
                     //}
 
                 }
@@ -281,7 +228,7 @@ public class ClientLi {
                 }
                 else{
                     SiteSession s1 = sessions.get(id);
-                   SiteSession.setGlobalLastHitMillis(firstHitMillis);
+                    SiteSession.setGlobalLastHitMillis(firstHitMillis);
                     if(s1.isExpired()){
 
                         SiteSession sessionOutput = s1;
@@ -308,6 +255,44 @@ public class ClientLi {
         }
         System.out.println("done");
     }
+
+    public void getSessionDetails(int clientID) {
+        searchSessionByIDCQL = session.prepare("SELECT StartTime,EndTime,numberOfAccess,numberOfURL FROM keyspace.SessionRecords WHERE Client_id = ?");
+
+        ResultSetFuture queryFuture = session.executeAsync(new BoundStatement(searchSessionByIDCQL).bind(clientID));
+        ResultSet rset = queryFuture.getUninterruptibly();
+        System.out.println("here is the result of " + clientID);
+        for (Row row : rset) {
+            Date startdate = row.getDate(0);
+            Date enddate = row.getDate(1);
+            int numofaccess = row.getInt(2);
+            int numofurl = row.getInt(3);
+
+            System.out.println("start time: " + startdate + "End time: " + enddate + "number of Access: " + numofaccess + "number of URL access" + numofurl);
+
+
+        }
+
+    }
+
+    public void CreateSessionTable() {
+        cluster =  Cluster.builder().addContactPoint("ec2-54-194-161-1.eu-west-1.compute.amazonaws.com").build();
+        //cluster = Cluster.builder().addContactPoint("localhost").build();
+        session = cluster.connect("li_keyspace");
+        String tableCQL = "CREATE TABLE LI_keyspace.SessionRecords (" +
+                "Client_id int, " +
+                "StartTime timestamp, " +
+                "EndTime timestamp, " +
+                "numberOfAccess int," +
+                "numberOfURL int," +
+                "PRIMARY KEY (Client_id, StartTime, EndTime)" +
+                ");";
+        session.execute(tableCQL);
+
+        searchCQL = session.prepare("INSERT INTO LI_keyspace.SessionRecords (Client_id, StartTime, EndTime, numberOfAccess, numberOfURL)  VALUES (? ,? ,? ,? ,?);");
+
+    }
+
 
 
     public void close() {
